@@ -47,11 +47,10 @@ const Header = (props) => {
             <div className='row-1'>
                 <div className='nav-left'>
                     <MdMenu className='menu-icon' onClick={clickMenuIcon} />
-                    <Link to="/">Dashboard</Link>
+                    <Link to="/dashboard">Dashboard</Link>
                     <Link to="/user-info">User Info</Link>
                     <Link to="/list-groups">List Groups</Link>
                     <Link to="/password-changing">Change Password</Link>
-                    <Link to="/settings">Settings</Link>
                 </div>
                 <div className='nav-right'>
                     <div className='header-avatar' >

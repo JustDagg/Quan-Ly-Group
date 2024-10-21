@@ -33,7 +33,7 @@
 
 .group-link {
     display: flex;
-    justify-content: space-between;
+    margin-left: 100px;
     margin-top: 1.35rem;
 }
 

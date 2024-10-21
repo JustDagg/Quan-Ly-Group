@@ -16,10 +16,6 @@ import userActions from "../../actions/userActions";
 import { connect } from 'react-redux';
 
 const Signin = (props) => {
-    //Function component
-    // const [username, setUsername] = useState('')
-    // const [password, setPassword] = useState('')
-    // const [rememberMe, setRememberMe] = useState(false)
 
     const [userSignin, setUserSignin] = useState({
         username: '',
@@ -27,26 +23,12 @@ const Signin = (props) => {
         rememberMe: false
     })
 
-    //Class component
-    // this.state = {
-    //     username: '',
-    //     password: ''
-    // }
-
     const handleSubmitForm = (e) => {
         e.preventDefault()
         props.signin(userSignin.username, userSignin.password)
     }
 
     const handleOnChangeInput = (e) => {
-        //C1
-        // if (e.target.name === 'username') {
-        //     setUsername(e.target.value)
-        // }else if (e.target.name === 'password') {
-        //     setPassword(e.target.value)
-        // }
-
-        //C2
         setUserSignin({
             ...userSignin,
             [e.target.name]: e.target.value
@@ -116,7 +98,6 @@ const Signin = (props) => {
                 </div>
 
                 <div className='group-link'>
-                    <Link to="/forgot-password">Forgot password?</Link>
                     <Link to="/sign-up">Don't have an account? Sign Up</Link>
                 </div>
                 <p className="copy-right"> Copyright &copy; &nbsp;

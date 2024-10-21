@@ -17,7 +17,7 @@ const Sidebar = (props)=> {
         >   
             <div className='sidebar-header'>
 
-                <h3>REACT JS</h3>
+                <h3>Group Management</h3>
             </div>
             <div className='sidebar-menu'>
                 <CustomLinks2 menuLinks={menuLinks} />

@@ -4,47 +4,51 @@
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 0;
-    background-color: #242b39;
-    color: #fff;
+    background-color: #2a2f3b;
+    color: #ffffff;
     display: flex;
     flex-direction: column;
-    transition: transform 350ms cubic-bezier(0.165, 0.84, 0.44, 1) 0ms;
+    transition: transform 350ms cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-right: 1px solid #394a63;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar.close { 
-    transform: translate(-16rem, 0);
+    transform: translateX(-100%);
 }
 
 .sidebar-header {
     height: 60px;
     display: flex;
     align-items: center;
-    padding-left: 40px;
+    padding-left: 10px;
+    background-color: #1e232d;
+    border-bottom: 1px solid #394a63;
 }
 
 .sidebar-header h3 {
-    font-size: 1rem;
+    font-size: 1.25rem;
     margin-left: 1rem;
+    color: #39f;
 }
 
-
 .sidebar-menu {
-    background-color: #151921;
     flex: 1;
+    padding: 10px;
 }
 
 .dashboard {
     display: flex;
-    justify-content: space-around;
     align-items: center;
     height: 48px;
-    /* border: 1px solid red; */
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 200ms;
     cursor: pointer;
 }
 
 .dashboard:hover {
-    background-color: #151921;
+    background-color: #3a3f4a;
 }
 
 .dashboard span:last-child { 
@@ -52,7 +56,7 @@
     padding: 2px 6px;
     border-radius: 4px;
     text-transform: uppercase;
-    font-size: .75rem;
+    font-size: 0.75rem;
 }
 
 .sidebar-bottom {
@@ -60,13 +64,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-top: 1px solid #394a63;
 }
 
 .sidebar-bottom h4 { 
     text-transform: uppercase;
-    font-size: .95rem;
+    font-size: 1rem;
+    color: #ffffff;
     border-bottom: 2px solid rgb(0, 127, 254);
     padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
 }

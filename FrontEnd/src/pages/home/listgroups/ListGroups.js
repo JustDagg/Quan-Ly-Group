@@ -1,52 +1,28 @@
 import { Link } from 'react-router-dom'
 import './ListGroups.scss'
-
-//import { listGroups } from '../../data/data'
-
-import { MdEdit } from 'react-icons/md'
-
-import { MdOutlineDeleteForever } from 'react-icons/md'
-
-import { MdAddToPhotos } from 'react-icons/md'
-
-import { MdOutlineClose } from 'react-icons/md'
-
-import { MdSearch } from 'react-icons/md'
-
+import { MdEdit, MdOutlineDeleteForever, MdAddToPhotos, MdOutlineClose, MdRefresh } from 'react-icons/md'
 import FormGroupInfo from './FromGroupInfo'
-
 import { connect } from 'react-redux'
-
 import viewActions from '../../../actions/viewActions'
-
 import { useEffect, useState } from 'react'
-
-import  DatePicker from 'react-datepicker'
-
+import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
-
 import ReactPaginate from 'react-paginate';
-
 import userActions from '../../../actions/userActions'
+import ConfirmDeleteModal from './ConfirmDeleteModal '
 
 const ListGroups = (props) => {
     const [groupItem, setGroupItem] = useState({})
-
     const [buttonText, setButtonText] = useState('Create')
-
     const [selectChanged, setSelectChanged] = useState(false)
-
     const [type, setType] = useState('Type')
-
     const [startDate, setStartDate] = useState(null)
+    const [endDate, setEndDate] = useState(null)
+    const [currentPage, setCurrentPage] = useState(0)
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-    const [endDate, setEndtDate] = useState(null)
-
-    const [pageCount, setPageCount] = useState(props.totalPagesListGroups)
-
-    const PAGE_NUMBER = 1
     const PAGE_SIZE = 10
-    const SORT = 'id,asc'   
+    const SORT = 'id,asc'
 
     const handleClickAddGroup = () => {
         setGroupItem({
@@ -56,29 +32,29 @@ const ListGroups = (props) => {
             totalMember: ''
         })
         setButtonText('Create')
-
         props.toggleFormGroup(true)
     }
 
     const handleClickEdit = (item) => {
         setButtonText('Save')
-
         props.toggleFormGroup(true)
-
-        let groupIndex = props.listGroups.findIndex(x => x.id == item.id)
-
+        let groupIndex = props.listGroups.findIndex(x => x.id === item.id)
         setGroupItem(props.listGroups[groupIndex])
     }
 
     const handleClickDelete = (item) => {
-        console.log(item);
-        props.deleteGroup(item.id);
-    }
+        setGroupItem(item);
+        setShowConfirmModal(true);
+    };
 
-    const handleClickIconClose = () => {
-        setType('Type')
-        setSelectChanged(false)
-    }
+    const confirmDelete = () => {
+        props.deleteGroup(groupItem.id);
+        setShowConfirmModal(false);
+    };
+
+    const handleCloseModal = () => {
+        setShowConfirmModal(false);
+    };
 
     const onSelectChange = (e) => {
         setType(e.target.value)
@@ -90,22 +66,24 @@ const ListGroups = (props) => {
     }
 
     const handleEndDateChange = (date) => {
-        setEndtDate(date)
+        setEndDate(date)
     }
 
-    // const handlePageClick = (event) => {
-    // };
+    const resetFilters = () => {
+        setType('Type');
+        setStartDate(null);
+        setEndDate(null);
+        setCurrentPage(0);
+        setSelectChanged(false);
+        fetchGroups(0);
+    };
 
-    useEffect(() => {
-        props.getListGroups()
-    }, [props.updateCompleted, props.createdGroupSuccessfully, props.groupDeleted])
-
-    const _clickSerch = () => {
+    const fetchGroups = (page) => {
         let groupFilterForm = {
             type: type === 'Type' ? null : type,
             startDate: startDate,
             endDate: endDate,
-            pageNumber: PAGE_NUMBER,
+            pageNumber: page + 1,
             pageSize: PAGE_SIZE,
             sort: SORT
         }
@@ -113,57 +91,73 @@ const ListGroups = (props) => {
     }
 
     useEffect(() => {
+        fetchGroups(currentPage);
+    }, [currentPage, props.updateCompleted, props.createdGroupSuccessfully, props.groupDeleted, type, startDate, endDate]);
+
+    const handlePageClick = (data) => {
+        setCurrentPage(data.selected)
+    }
+
+    useEffect(() => {
         props.showLoading(props.isLoading)
     }, [props.isLoading])
 
-    console.log('List group rerender...')
-    return(
+    // Calculate total members function
+    const calculateTotalMembers = () => {
+        return props.listGroups.reduce((total, group) => total + group.totalMember, 0);
+    }
+
+    return (
         <div className="list-groups">
             <div className='content'>
-                {   
-                    props.formGroupIsOpen && <FormGroupInfo groupItem={groupItem} buttonText={buttonText}/>
-                }
+                {props.formGroupIsOpen && <FormGroupInfo groupItem={groupItem} buttonText={buttonText} />}
                 <div className='filter-form'>
                     <div className='type-filter'>
-                        <select 
-                            className='form-control-filter' 
-                            value={type} 
-                            onChange={onSelectChange}
-                        >
+                        <select className='form-control-filter' value={type} onChange={onSelectChange}>
                             <option value="Type" hidden>Type</option>
                             <option value="BACKEND">BACKEND</option>
                             <option value="FRONTEND">FRONTEND</option>
                             <option value="FULLSTACK">FULLSTACK</option>
                         </select>
-                        
-                        {   
-                            selectChanged && <MdOutlineClose onClick={handleClickIconClose} className='icon-close'/>
-                        }
                     </div>
                     <DatePicker
                         className='form-control-filter'
-                        selected={ startDate }
-                        onChange={ handleStartDateChange }
+                        selected={startDate}
+                        onChange={handleStartDateChange}
                         name="startDate"
                         dateFormat="dd/MM/yyyy"
                         placeholderText='Start Date'
                     />
                     <DatePicker
                         className='form-control-filter'
-                        selected={ endDate }
-                        onChange={ handleEndDateChange }
-                        name="endtDate"
+                        selected={endDate}
+                        onChange={handleEndDateChange}
+                        name="endDate"
                         dateFormat="dd/MM/yyyy"
                         placeholderText='End Date'
                     />
-                    <div className='icon-serach'>
-                        <MdSearch onClick={_clickSerch} fontSize="1.2rem"/>
-                    </div>
+                    <button
+                        onClick={resetFilters}
+                        title='Reset filter'
+                        style={{
+                            marginLeft: '20px',
+                            backgroundColor: 'blue',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '50%',
+                            padding: '10px 10px',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            transition: 'background-color 0.3s',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <MdRefresh />
+                    </button>
                 </div>
                 <div className='icon-add'>
-                    <MdAddToPhotos fontSize="1.2rem" style={{cursor: 'pointer'}}
-                        onClick={handleClickAddGroup}
-                    />
+                    <MdAddToPhotos fontSize="1.2rem" style={{ cursor: 'pointer' }} onClick={handleClickAddGroup} />
                 </div>
                 <table>
                     <thead>
@@ -173,58 +167,60 @@ const ListGroups = (props) => {
                             <th>Type</th>
                             <th>Created Date</th>
                             <th>Total Member</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            props.listGroups && props.listGroups.map((item, index) => {
-                                return (
-                                    <tr key={item.id}>
-                                        <td>{index + 1}</td>
-                                        <td>{item.name}</td>
-                                        <td>{item.type}</td>
-                                        <td>{item.createdAt}</td>
-                                        <td>{item.totalMember}</td>
-                                        <td>
-                                            <MdEdit fontSize="1.2rem"
-                                                style={{marginRight: '10px', cursor: 'pointer'}}
-                                                onClick={() => handleClickEdit(item)}
-                                            />
-                                            <MdOutlineDeleteForever fontSize="1.2rem"
-                                                style={{marginLeft: '10px', cursor: 'pointer'}}
-                                                onClick={() => handleClickDelete(item)}
-                                            />
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
+                        {props.listGroups && props.listGroups.map((item, index) => (
+                            <tr key={item.id}>
+                                <td>{index + 1 + currentPage * PAGE_SIZE}</td>
+                                <td>{item.name}</td>
+                                <td>{item.type}</td>
+                                <td>{item.createdAt}</td>
+                                <td>{item.totalMember}</td>
+                                <td>
+                                    <MdEdit fontSize="1.2rem"
+                                        style={{ marginRight: '10px', cursor: 'pointer', color: 'green' }}
+                                        onClick={() => handleClickEdit(item)}
+                                    />
+                                    <MdOutlineDeleteForever fontSize="1.2rem"
+                                        style={{ marginLeft: '10px', cursor: 'pointer', color: 'red' }}
+                                        onClick={() => handleClickDelete(item)}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
-                <div className='paging'>
-                    {/* <ReactPaginate
-                        nextLabel="next >"
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={2}
-                        marginPagesDisplayed={2}
-                        pageCount={pageCount}
-                        previousLabel="< previous"
-                        pageClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousClassName="page-item"
-                        previousLinkClassName="page-link"
-                        nextClassName="page-item"
-                        nextLinkClassName="page-link"
-                        breakLabel="..."
-                        breakClassName="page-item"
-                        breakLinkClassName="page-link"
-                        containerClassName="pagination"
-                        activeClassName="active"
-                        renderOnZeroPageCount={null}
-                        
-                    /> */}
+
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px' }}>
+                    {/* Total Members */}
+                    <div className="total-members" style={{ marginBottom: '10px', fontSize: '16px' }}>
+                        <strong>Total Members: {calculateTotalMembers()} of page {currentPage + 1}</strong>
+                    </div>
+
+                    {/* Pagination */}
+                    <div className='paging'>
+                        <ReactPaginate
+                            previousLabel={'Previous'}
+                            nextLabel={'Next'}
+                            breakLabel={'...'}
+                            pageCount={props.totalPagesListGroups}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                        />
+                    </div>
                 </div>
+
+                <ConfirmDeleteModal
+                    show={showConfirmModal}
+                    onClose={handleCloseModal}
+                    onConfirm={confirmDelete}
+                    groupName={groupItem.name}
+                />
             </div>
         </div>
     )

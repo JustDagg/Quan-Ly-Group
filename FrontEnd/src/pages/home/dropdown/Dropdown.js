@@ -15,23 +15,12 @@ import { MdOutlineSettings } from 'react-icons/md';
 
 import { MdExitToApp } from 'react-icons/md';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const Dropdown = (props) => {
     const myRef2 = useRef(false)
 
-    // const [count, setCount] = useState(0)
-
-    // useEffect(() => {
-    //     console.log('component mount...')
-    //     document.addEventListener('mousedown', _handleClickOutSideDropdown)
-    //     if (count == 10) {
-
-    //     }
-    // }, [count])
-
     useEffect(() => {
-        //console.log('component mount...')
         document.addEventListener('mousedown', _handleClickOutSideDropdown)
     }, [])
 
@@ -40,8 +29,6 @@ const Dropdown = (props) => {
             return
         }else {
             if (myRef2.current && !myRef2.current.contains(e.target)) props.setDropdownClose()
-            // console.log(myRef2.current)
-            // console.log(e.target)
         }
     }
     
@@ -88,12 +75,6 @@ const Dropdown = (props) => {
                 <Link to="/user-info">
                     <MdOutlinePermContactCalendar size='1.2rem'/>
                     Profile
-                </Link>
-            </li>
-            <li>
-                <Link to="/Settings">
-                    <MdOutlineSettings size='1.2rem'/>
-                    Settings
                 </Link>
             </li>
             <li>

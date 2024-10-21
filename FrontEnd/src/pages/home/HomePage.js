@@ -1,42 +1,32 @@
-import { useState } from 'react';
-import { Routes, Route, Outlet}  from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './sidebar/Sidebar';
 import Header from './header/Header';
-
 import UserInfo from './userinfo/UserInfo';
 import ListGroups from './listgroups/ListGroups';
-import Settings from './settings/Settings';
-
+import Dashboard from './dashboard/Dashboard';
 import WithLoading from '../../_sharecomponents/loading/WithLoading';
-
 import './HomePage.css';
-
 import { connect } from 'react-redux';
 
-const UserWithLoading = WithLoading(UserInfo)
-const ListGroupsWithLoading = WithLoading(ListGroups)
-const SettingsWithLoading = WithLoading(Settings)
-
+const UserWithLoading = WithLoading(UserInfo);
+const ListGroupsWithLoading = WithLoading(ListGroups);
+const DashboardWithLoading = WithLoading(Dashboard);
 
 const HomePage = (props) => {
-    //const [sideBarIsOpen, setSidebarIsOpen] = useState(true)
-    const handleClickMenuIcon = (sidebarIsOpen) => {
-        //setSidebarIsOpen(sidebarIsOpen)
-    }
-
-    return(
+    
+    return (
         <div className='home-container'>
             <Sidebar />
             <div className={props.sidebarIsOpen ? 'home-main' : 'home-main sidebar-close'}>
-                <Header clickMenuIcon={handleClickMenuIcon}/>
+                <Header/>
                 <div className='main-content'>
                     <Outlet />
                 </div>
+                {/* New Group Overview Section */}
             </div>
         </div>
     )
 }
-
 
 const mapStateToProps = (state) => {
     return {

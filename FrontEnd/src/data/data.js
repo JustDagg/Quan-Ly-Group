@@ -13,10 +13,5 @@ export const menuLinks = [
         text: 'Change Password',
         link: '/password-changing',
         icon: 'fa fa-key'
-    },
-    {
-        text: 'Settings',
-        link: '/Settings',
-        icon: 'fa-solid fa-gear'
-    },
+    }
 ]
